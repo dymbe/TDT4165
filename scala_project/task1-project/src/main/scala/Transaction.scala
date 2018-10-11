@@ -54,7 +54,7 @@ class Transaction(val transactionsQueue: TransactionQueue,
               status = TransactionStatus.SUCCESS
               return
           } catch {
-              case _: Throwable => _
+              case _: Throwable =>
           }
       }
 
