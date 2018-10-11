@@ -7,13 +7,16 @@ class Account(val bank: Bank, initialBalance: Double) {
     val balance = new Balance(initialBalance)
     val uid = bank.generateAccountId
 
-    def withdraw(amount: Double): Unit = ??? 
-    def deposit(amount: Double): Unit = ??? 
-    def getBalanceAmount: Double = ??? 
+    def withdraw(amount: Double): Unit = balance.synchronized {
+        balance.amount -= amount
+    }
+    def deposit(amount: Double): Unit = balance.synchronized {
+        balance.amount += amount
+    }
+    def getBalanceAmount: Double = balance.amount
 
     def transferTo(account: Account, amount: Double) = {
         bank addTransactionToQueue (this, account, amount)
     }
-
 
 }
