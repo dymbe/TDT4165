@@ -8,9 +8,18 @@ class Account(val bank: Bank, initialBalance: Double) {
     val uid = bank.generateAccountId
 
     def withdraw(amount: Double): Unit = balance.synchronized {
+        if (balance.amount < amount) {
+            throw new NoSufficientFundsException
+        }
+        if (amount < 0) {
+            throw new IllegalAmountException
+        }
         balance.amount -= amount
     }
     def deposit(amount: Double): Unit = balance.synchronized {
+        if (amount < 0) {
+            throw new IllegalAmountException
+        }
         balance.amount += amount
     }
     def getBalanceAmount: Double = balance.amount
