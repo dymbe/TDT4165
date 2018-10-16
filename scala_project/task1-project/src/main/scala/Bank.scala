@@ -6,7 +6,7 @@ class Bank(val allowedAttempts: Integer = 3) {
     private val uid = new AtomicInteger()
     private val transactionsQueue: TransactionQueue = new TransactionQueue()
     private val processedTransactions: TransactionQueue = new TransactionQueue()
-    private val executorContext = ???
+    private val executorContext = new forkjoin.ForkJoinPool
 
     def addTransactionToQueue(from: Account, to: Account, amount: Double): Unit = {
       transactionsQueue push new Transaction(
@@ -16,14 +16,9 @@ class Bank(val allowedAttempts: Integer = 3) {
     // Hint: use a counter
     def generateAccountId: Int = uid.getAndIncrement()
 
+    private def processTransactions: Unit = {
 
-        /*uidCount.synchronized {
-        val newUid = uidCount + 1
-        uidCount = newUid
-        newUid
-    }*/
-
-    private def processTransactions: Unit = ???
+    }
 
     def addAccount(initialBalance: Double): Account = {
         new Account(this, initialBalance)
