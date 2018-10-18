@@ -9,7 +9,7 @@ class TransactionQueue {
     private val queue: mutable.Queue[Transaction] = mutable.Queue()
 
     // Remove and return the first element from the queue
-    def pop: Transaction = queue.dequeue()
+    def pop: Transaction = queue.dequeue
 
     // Return whether the queue is empty
     def isEmpty: Boolean = queue.isEmpty
@@ -39,7 +39,9 @@ class Transaction(val transactionsQueue: TransactionQueue,
           to deposit amount
       }
 
-      for (_ <- 0 until allowedAttemps) {
+      var tries = 0
+
+      while (tries < allowedAttemps && status != TransactionStatus.SUCCESS) {
           try {
               if (from.uid < to.uid) from synchronized {
                   to synchronized {
@@ -52,12 +54,15 @@ class Transaction(val transactionsQueue: TransactionQueue,
               }
 
               status = TransactionStatus.SUCCESS
-              return
           } catch {
-              case _: Throwable =>
+              case _: Throwable => Thread.sleep(100)
           }
+
+          tries += 1
       }
 
-      status = TransactionStatus.FAILED
+      if (status != TransactionStatus.SUCCESS) {
+          status = TransactionStatus.FAILED
+      }
   }
 }
